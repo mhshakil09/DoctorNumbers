@@ -2,9 +2,11 @@ package com.example.doctornumbers;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     String docName[] = {"Dr. Monirul Islam", "Dr. Hasan", "Dr. Yang", "Dr. Asif"};
     String docQualifications[] = {"MBBS, FCPS, DMC", "MBBS, FCPS, DMC", "MBBS, FCPS, DMC", "MBBS, FCPS, DMC"};
-    String docSpecialized[] = {"Cardiology", "Cardiology", "Cardiology", "Cardiology"};
+    String docSpecialized[] = {"Cardiology", "Cardiology", "Neurosurgeon", "Neurosurgeon"};
     String docLocation[] = {"Khilgaon", "Khilgaon", "Khilgaon", "Khilgaon"};
     String docPhone[] = {"01600000001", "01600000002", "01600000003", "01600000004"};
 
@@ -43,11 +45,38 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(MainActivity.this, ""+docPhone[position], Toast.LENGTH_SHORT).show();
-                Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                callIntent.setData(Uri.parse("tel:"+docPhone[position]));
-                startActivity(callIntent);
+
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                builder1.setMessage("Call "+docName[position]+" ?");
+                builder1.setCancelable(true);
+
+                builder1.setPositiveButton(
+                        "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                                callIntent.setData(Uri.parse("tel:"+docPhone[position]));
+                                startActivity(callIntent);
+                            }
+                        });
+
+                builder1.setNegativeButton(
+                        "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+
             }
         });
+
+        String selectedSpinner = spinner.getSelectedItem().toString();
+        //Toast.makeText(this, ""+selectedSpinner, Toast.LENGTH_SHORT).show();
 
         String[] text = getResources().getStringArray(R.array.category_list);
         ArrayAdapter adapter = new ArrayAdapter(this,
